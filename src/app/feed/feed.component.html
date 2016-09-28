@@ -1,0 +1,54 @@
+<form class="ui form">
+  <div class="field">
+    <label>What's on your mind?</label>
+    <textarea name='body' placeholder="Penny for your thoughts" type="text" [(ngModel)]='tweetText'></textarea>
+  </div>
+
+  <button class="ui button primary" type="button" (click)='OnNewTweet(tweetText)'>Tweet</button>
+</form>
+
+<div *ngIf="errorText" class="ui negative message">
+  <i class="close icon"></i>
+  <div class="header">
+    {{ errorText }}
+  </div>
+</div>
+
+<div *ngIf='loaded'>
+  <div class="ui comments" *ngIf="tweets.length">
+    <div class="comment" *ngFor='let tweet of tweets'>
+      <a class="avatar">
+        <img src="/assets/{{tweet.avatar.toLowerCase()}}">
+      </a>
+      <div class="content">
+        <a class="author">{{tweet.author}}</a>
+        <div class="metadata">
+          <span class="date"> {{tweet.date | date: 'hh:mm:ss dd/MM/yy' }}</span>
+        </div>
+        <div class="text">
+          {{tweet.body}}
+        </div>
+        <div class="actions">
+          <a class="reply">Reply</a>
+          <a class="like" (click)='OnFavorite(tweet)'>
+            <i class="like icon" [ngClass]='{ liked: tweet.hasFavorited(userService.getCurrentUser()) }'></i> {{tweet.favorites.length}}
+            Favorites
+          </a>
+
+          <a class="retweet" (click)='OnRetweet(tweet)'>
+            <i class="retweet icon" [ngClass]='{ retweeted : tweet.hasRetweeted(userService.getCurrentUser()) }'></i> {{tweet.retweets.length}}
+            Retweets
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui comments" *ngIf="!tweets.length">
+    <h2>There are no tweets</h2>
+  </div>
+</div>
+
+<div *ngIf='!loaded'>
+  <h2>Loading...</h2>
+</div>
